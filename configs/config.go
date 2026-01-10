@@ -9,7 +9,14 @@ import (
 )
 
 func DatabaseStart() {
-	conn, err := pgx.Connect(context.Background(), "postgres://marcus:12345678@localhost:5432/atlas-db")
+	dbHost := os.Getenv("DB_HOST")
+
+	if dbHost == "" {
+		dbHost = "localhost"
+	}
+	
+	connString := fmt.Sprintf("postgres://marcus:12345678@%s:5432/atlas-db", dbHost)
+	conn, err := pgx.Connect(context.Background(), connString)
 	
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
